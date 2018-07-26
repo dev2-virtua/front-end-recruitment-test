@@ -74,4 +74,18 @@
   }
 
   // Your custom JavaScript goes here
+  const button = document.getElementsByTagName('button')[0];
+  const image = document.getElementsByTagName('img')[0];
+  const destination = image.parentElement;
+
+  /**
+   * Clone image function
+   */
+  function cloneImage() {
+    const clone = image.cloneNode(true);
+    destination.appendChild(clone);
+  }
+
+  // Add event to button
+  button.addEventListener('click', cloneImage);
 })();
