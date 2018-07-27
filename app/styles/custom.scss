@@ -80,7 +80,10 @@ $bs_tablet: 860px;
     &:focus {
       border-color: $cta;
       outline: none;
+    }
 
+    &.error {
+      border-color: red;
     }
   }
 
@@ -281,6 +284,32 @@ button[type="submit"] {
 
 table {
   width: 100%;
+}
+
+.message {
+  @extend %shadowed;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-sizing: border-box;
+
+  p {
+    margin: 0;
+  }
+
+  &.message-error {
+    background-color: #ffc3cb;
+    border-color: red;
+    color: red;
+  }
+
+  &.message-success {
+    background-color: #b1f2ac;
+    border-color: green;
+    color: green;
+  }
 }
 
 // Override framework

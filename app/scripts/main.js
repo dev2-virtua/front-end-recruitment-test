@@ -77,13 +77,105 @@
   const button = document.getElementsByTagName('button')[0];
   const image = document.getElementsByTagName('img')[0];
   const destination = image.parentElement;
+  const checkout = document.getElementById('checkout');
+  const form = checkout.getElementsByTagName('form')[0];
+
+  /**
+   * Validate form function
+   * @param {String} type
+   * @param {String} message
+   */
+  function displayMessage(type, message) {
+    const isExistElm = document.getElementsByClassName('message');
+
+    if (isExistElm.length > 0) {
+        isExistElm[0].parentNode.removeChild(isExistElm[0]);
+    }
+
+    const msgElm = document.createElement('div');
+    const msgTextElm = document.createElement('p');
+
+    msgElm.setAttribute('class', `message message-${type}`);
+
+    msgTextElm.innerHTML = message;
+
+    msgElm.appendChild(msgTextElm);
+
+    checkout.prepend(msgElm);
+  }
+
+  /**
+   * Validate form function
+   * @param {function} callback
+   * @return {void} null
+   */
+  function validateForm(callback) {
+      let validated = true;
+      const reqElm = form.querySelectorAll('[required]');
+      const patternElm = form.querySelectorAll('[required][data-pattern]');
+      let wrongs = [];
+
+      // Check required elements
+      reqElm.forEach((item) => {
+        item.classList.remove('error');
+
+        if (item.value === '' || item.value === null) {
+          wrongs.push(item.name);
+          item.className += ' error';
+          validated = false;
+        }
+      });
+
+      // Check elements with specific patterns
+      patternElm.forEach((item) => {
+        let pattern = '';
+        const itemPattern = item.dataset.validationPattern;
+        const itemVal = item.value;
+
+        switch (itemPattern) {
+          case 'email':
+              pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+          break;
+          case 'creditcard':
+              pattern = /[0-9]{4}[\-][0-9]{4}[\-][0-9]{4}[\-][0-9]{4}$/;
+          break;
+        }
+
+        if (!pattern.test(itemVal)) {
+          item.className += ' error';
+          wrongs.push(item.name + '(invalid)');
+        }
+      });
+
+      if (validated) {
+          return callback();
+      } else {
+          let nameList = '';
+          let msgText = 'Coś poszło nie tak. Sprawdź jeszcze pola: ';
+
+          for (let i = 0, wrong; wrong = wrongs[i]; i++) {
+              nameList += '<li>' + wrong + '</li>';
+          }
+
+          displayMessage('error', msgText + '<ul>' + nameList + '</ul>');
+      }
+  }
+
+  // Add onSubmit event to form
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    validateForm(function() {
+      displayMessage('success', 'Dane zostały wysłane.');
+    });
+  });
 
   /**
    * Clone image function
    */
   function cloneImage() {
-    const clone = image.cloneNode(true);
-    destination.appendChild(clone);
+      const clone = image.cloneNode(true);
+      destination.appendChild(clone);
   }
 
   // Add event to button
